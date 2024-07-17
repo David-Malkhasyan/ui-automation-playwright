@@ -4,6 +4,7 @@ import com.microsoft.playwright.*;
 import lombok.Getter;
 import utils.Configurations;
 
+import java.awt.*;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -36,6 +37,10 @@ public class PlaywrightFactory {
     }
 
     public static void initBrowser() {
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int width = (int)screenSize.getWidth();
+        int height = (int)screenSize.getHeight();
+        System.out.println(width + " " + height);
         // playwright = Playwright.create();
         tlPlaywright.set(Playwright.create());
 
@@ -56,9 +61,8 @@ public class PlaywrightFactory {
                 System.out.println("please pass the right browser name......");
         }
 
-        tlBrowserContext.set(getBrowser().newContext());
+        tlBrowserContext.set(getBrowser().newContext(new Browser.NewContextOptions().setViewportSize(width, height)));
         tlPage.set(getBrowserContext().newPage());
-        getPage().navigate(Configurations.URL.trim());
     }
 
     /**

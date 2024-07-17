@@ -2,6 +2,9 @@ package tests;
 
 
 import com.microsoft.playwright.Browser;
+import com.microsoft.playwright.BrowserContext;
+import com.microsoft.playwright.Page;
+import com.microsoft.playwright.Playwright;
 import driverManager.PlaywrightFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,20 +22,27 @@ import utils.JsonParser;
 public class BaseTest {
     public static MainTestData mainTestData;
     public static MainTestDataExpected mainTestDataExpected;
-    protected Browser browser = PlaywrightFactory.getBrowser();
     protected Logger logger;
     protected SoftAssert softAssert;
+    Playwright playwright;
+    Browser browser;
+    BrowserContext browserContext;
+    Page page;
 
     @BeforeMethod
     public void setup() {
-        logger = LogManager.getLogger(this);
-        logger.info("WebDriver for creation" + Configurations.BROWSER + "browser started");
         PlaywrightFactory.initBrowser();
-        logger.info("WebDriver for creation" + Configurations.BROWSER + "browser created");
+        browser = PlaywrightFactory.getBrowser();
+        browserContext = PlaywrightFactory.getBrowserContext();
+        page = PlaywrightFactory.getPage();
         softAssert = new SoftAssert();
-        logger.info("Test data deserialization");
         generateTestData();
-        logger.info("Test data is deserialized");
+        page.navigate("https://www.saucedemo.com/");
+    }
+
+    @AfterMethod
+    public void closure(){
+        browser.close();
     }
 
 
